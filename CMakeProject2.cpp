@@ -19,6 +19,11 @@
 
 
 
+
+
+
+
+
 int main()
 {
 	string path = "D:/Vscode_Project/Img/dragon.jpg";
