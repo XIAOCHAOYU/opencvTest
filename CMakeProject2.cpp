@@ -5,59 +5,110 @@
 
 #define EmptyCheck(x)  if (x.empty())   return Mat();
 
+int main() {
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-int main()
-{
 	string path = "D:/Vscode_Project/Img/dragon.jpg";
-
-
-	string SavePath = "D:/Vscode_Project/Img/dragonHalftone.jpg";
-
 	cv::Mat src = imread(path);
-
 	Mat img_Gray;
 	cv::cvtColor(src, img_Gray, cv::COLOR_BGR2GRAY);
 
+	//Mat img_Gray = Relief_Gray_one(img_Gray);
 
-	Mat img_Gray0 = img_Gray.clone();
-	Mat imgDiffuser_Halftone = Diffuser_Halftone(img_Gray0);
-
-	imwrite(SavePath, imgDiffuser_Halftone);
-
-	waitKey(3);
-
-	//int dip_val = 30;
+	// 自适应阈值二值化
+	Mat src_Binary = Threshold_AdaptiveThreshold(img_Gray);
 
 
-	//SetResolution(SavePath.c_str(), dip_val);
-	//waitKey(3);
+	////2:1 or 3:1
+	//int vL = 100;
+	//int vH = 150;
 
 
-	//cv::Mat src_SetResolution = imread(SavePath);
-
-	//waitKey(1);
+	//Mat src_Binary = GetOutlineCanny(img_Gray, vL, vH);
 
 
+
+
+
+	imshow("src", src);
+	imshow("src_Binary", src_Binary);
+
+
+
+	waitKey(0);
 	return 0;
 }
+
+
+
+
+//局部二值化算法
+Mat Threshold_AdaptiveThreshold(Mat& mat)
+{
+	EmptyCheck(mat);
+	Mat srcBinary;
+	adaptiveThreshold(~mat, srcBinary, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 11, -2);
+	return srcBinary;
+}
+
+
+//cannay 提取边缘
+Mat GetOutlineCanny(Mat& mat, int value_low, int value_hight)
+{
+	Mat src = mat.clone();
+	Mat edge;
+	blur(src, src, Size(3, 3));
+	Canny(src, edge, value_hight, value_low, 3);
+
+	
+	return edge;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+//int main()
+//{
+//	string path = "D:/Vscode_Project/Img/dragon.jpg";
+//
+//
+//	string SavePath = "D:/Vscode_Project/Img/dragonHalftone.jpg";
+//
+//	cv::Mat src = imread(path);
+//
+//	Mat img_Gray;
+//	cv::cvtColor(src, img_Gray, cv::COLOR_BGR2GRAY);
+//
+//
+//	Mat img_Gray0 = img_Gray.clone();
+//	Mat imgDiffuser_Halftone = Diffuser_Halftone(img_Gray0);
+//
+//	imwrite(SavePath, imgDiffuser_Halftone);
+//
+//	waitKey(3);
+//
+//	//int dip_val = 30;
+//
+//
+//	//SetResolution(SavePath.c_str(), dip_val);
+//	//waitKey(3);
+//
+//
+//	//cv::Mat src_SetResolution = imread(SavePath);
+//
+//	//waitKey(1);
+//
+//
+//	return 0;
+//}
 
 
 bool SetResolution(const char* path, int iResolution)
